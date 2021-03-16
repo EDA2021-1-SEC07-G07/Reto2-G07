@@ -24,6 +24,7 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+from DISClib.ADT import map as mp
 assert cf
 
 
@@ -34,25 +35,56 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
+
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("1- Cargar información de los videos en el catálogo")
+    print("2- Videos en tendencia con más likes (Categoría)")
 
-catalog = None
+def initCatalog():
+    """
+    Inicializa el catalogo de videos
+    """
+    return controller.initCatalog()
 
-"""
-Menu principal
-"""
-while True:
-    printMenu()
-    inputs = input('Seleccione una opción para continuar\n')
-    if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
+def loadData(catalog):
+    """
+    Carga los videos en la estructura de datos
+    """
+    controller.loadData(catalog)
 
-    elif int(inputs[0]) == 2:
-        pass
 
-    else:
-        sys.exit(0)
-sys.exit(0)
+
+
+
+def MainMenu():
+    """Menu Principal de la aplicación."""
+
+    try:
+        while True:
+            printMenu()
+            inputs = input('Seleccione una opción para continuar\n')
+            if int(inputs[0]) == 1:
+
+                print("Cargando información de los archivos ....\n") 
+                catalog = initCatalog()
+                loadData(catalog)
+                print(lt.getElement(catalog["videos"],1))
+
+            elif int(inputs[0]) == 2:
+                pass
+
+            elif int(inputs[0]) == 0:
+
+
+            
+                sys.exit(0)
+
+    except Exception:
+        raise Exception
+        print("No ha cargado la base de datos. Intentelo de nuevo.")
+        MainMenu()
+    sys.exit(0)
+
+
+MainMenu()
