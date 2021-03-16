@@ -172,3 +172,20 @@ def compareCategoryIds(name, category):
 
 
 # Funciones de ordenamiento
+def sortVideos(catalog, size, cmpFunction):
+    """Función que organiza una lista mediante Merge Sort. 
+
+    Parametros:
+        catalog: Catalogo a organizar
+        size: Tamaño del sub-catalogo que será organizado
+        cmpFunction: Nombre de la función de comparación a utilizar."""
+
+   if cmpFunction == "sortByLikes":
+
+        sub_list = lt.subList(catalog['videos'], 1, size)
+        sub_list = sub_list.copy()
+        start_time = time.process_time()
+        sorted_list = mergesort.sort(sub_list, cmpVideosByLikes)
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        return elapsed_time_mseg, sorted_list    

@@ -54,7 +54,19 @@ def loadData(catalog):
     controller.loadData(catalog)
 
 
+def filterCategory(catalog):
+    """Le pregunta al usuario bajo que categoría desea filtrar los algoritmos."""
 
+
+    selected_category = input("Ingrese el nombre de la categoria con la que desea filtrar sus datos: ").lower()
+    selected_category = " "+ selected_category
+
+    if mp.contains(catalog["category_id"], selected_category):
+
+            return selected_category.strip()
+
+    print("Este no es el nombre de una categoría existente. Intente de nuevo.")
+    return filterCategory(catalog)
 
 
 def MainMenu():
@@ -74,7 +86,9 @@ def MainMenu():
 
 
             elif int(inputs[0]) == 2:
-                pass
+                
+                selected_category = filterCategory(catalog)
+                videos_by_category = catalog["category_id"]
 
             elif int(inputs[0]) == 0:
 
