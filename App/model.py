@@ -110,6 +110,26 @@ def addCategoryId(catalog, category_id, video):
 
     category_data["size"] = totvideos
 
+
+def addCategoryName(catalog, category):
+    """
+    Esta función adiciona una categoria."""
+
+    category_name = category["name"]
+    category_id = category["id"]
+
+    existcategory = mp.contains(catalog["category_id"], category_id)
+
+    if existcategory:
+        
+        entry = mp.get(catalog["category_id"], category_id)
+        new_entry = me.setKey(entry, category_name)
+
+        mp.put(catalog["category_id"], me.getKey(new_entry), me.getValue(new_entry))
+
+        
+
+
 # Funciones para creacion de datos
 
 def newCategory(category_id):
@@ -140,14 +160,15 @@ def compareVideoIds(id1, id2):
 
 
 
-def compareCategoryIds(id, category):
+def compareCategoryIds(name, category):
     catentry = me.getKey(category)
-    if (int(id) == int(catentry)):
+    if (name == catentry):
         return 0
-    elif (int(id) > int(catentry)):
+    elif (name > catentry):
         return 1
     else:
-        return 0
+        return -1
+
 
 
 # Funciones de ordenamiento

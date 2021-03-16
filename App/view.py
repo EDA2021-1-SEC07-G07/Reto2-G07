@@ -69,7 +69,9 @@ def MainMenu():
                 print("Cargando información de los archivos ....\n") 
                 catalog = initCatalog()
                 loadData(catalog)
-                print(lt.getElement(catalog["videos"],1))
+
+                print("Catalogo cargado exitosamente!")
+
 
             elif int(inputs[0]) == 2:
                 pass
