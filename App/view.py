@@ -158,9 +158,7 @@ def MainMenu():
 
                 selected_category_dict = mp.get(videos_by_category, selected_category)
                 selected_info = me.getValue(selected_category_dict)
-
                 sorted_videos = sortVideos(selected_info, selected_info["size"], "sortByLikes")
-                
                 
                 n_sample = askSampleList(selected_info, selected_info["size"])
 

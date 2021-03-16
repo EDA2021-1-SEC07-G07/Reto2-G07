@@ -63,7 +63,7 @@ def newCatalog(list_type = "ARRAY_LIST"):
     ordenados por ningun criterio.  Son referenciados
     por los indices creados a continuacion.
     """
-    catalog['videos'] = lt.newList('SINGLE_LINKED', compareVideoIds)
+    catalog['videos'] = lt.newList('ARRAY_LIST', compareVideoIds)
 
     """
     A continuacion se crean indices por diferentes criterios
@@ -131,7 +131,7 @@ def addCategoryName(catalog, category):
     else:
 
         empty_category = {'category_id': category_id ,
-              "videos": lt.newList('SINGLE_LINKED', compareCategoryIds),
+              "videos": lt.newList('ARRAY_LIST', compareCategoryIds),
               "size": 0}
 
         mp.put(catalog["category_id"], category_name, empty_category)
@@ -150,7 +150,7 @@ def newCategory(category_id):
               "size": 0}
 
     category['category_id'] = category_id
-    category['videos'] = lt.newList('SINGLE_LINKED', compareCategoryIds)
+    category['videos'] = lt.newList('ARRAY_LIST', compareCategoryIds)
     return category
 
 # Funciones de consulta
