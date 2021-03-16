@@ -75,6 +75,11 @@ def loadCategories(catalog):
 
 
 # Funciones de ordenamiento
+def sortVideos(catalog, size, cmpFunction):
+    """
+    Ordena los videos por número de views, likes o days.
+    """
+    return model.sortVideos(catalog, size, cmpFunction)
 
 
 

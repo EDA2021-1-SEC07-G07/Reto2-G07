@@ -29,7 +29,8 @@ import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
-from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import mergesort 
+import time
 assert cf
 
 """
@@ -127,6 +128,14 @@ def addCategoryName(catalog, category):
 
         mp.put(catalog["category_id"], me.getKey(new_entry), me.getValue(new_entry))
 
+    else:
+
+        empty_category = {'category_id': category_id ,
+              "videos": lt.newList('SINGLE_LINKED', compareCategoryIds),
+              "size": 0}
+
+        mp.put(catalog["category_id"], category_name, empty_category)
+
         
 
 
@@ -168,6 +177,15 @@ def compareCategoryIds(name, category):
         return 1
     else:
         return -1
+
+def cmpVideosByLikes(video1, video2):
+    """
+    Devuelve verdadero (True) si los 'LIKES' de video1 son menores que los del video2
+    Args:
+    video1: informacion del primer video que incluye su valor 'LIKES'
+    video2: informacion del segundo video que incluye su valor 'LIKES'
+    """
+    return (float(video1["likes"]) > float(video2["likes"]))
 
 
 
