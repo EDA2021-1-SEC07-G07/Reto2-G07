@@ -58,7 +58,7 @@ def filterCategory(catalog):
     """Le pregunta al usuario bajo que categoría desea filtrar los algoritmos."""
 
 
-    selected_category = input("Ingrese el nombre de la categoria con la que desea filtrar sus datos: ").lower()
+    selected_category = input("Ingrese el nombre de la categoria con la que desea filtrar sus datos: ")
     selected_category = " "+ selected_category
 
     if mp.contains(catalog["category_id"], selected_category):

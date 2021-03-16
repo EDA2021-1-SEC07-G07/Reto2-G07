@@ -180,7 +180,7 @@ def sortVideos(catalog, size, cmpFunction):
         size: Tamaño del sub-catalogo que será organizado
         cmpFunction: Nombre de la función de comparación a utilizar."""
 
-   if cmpFunction == "sortByLikes":
+    if cmpFunction == "sortByLikes":
 
         sub_list = lt.subList(catalog['videos'], 1, size)
         sub_list = sub_list.copy()
