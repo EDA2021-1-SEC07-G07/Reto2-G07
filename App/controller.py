@@ -54,7 +54,7 @@ def loadData(catalog):
     start_memory = getMemory()
 
     loadVideos(catalog)
-    #loadTags(catalog)
+    loadCategories(catalog)
     #loadBooksTags(catalog)
 
     stop_memory = getMemory()
@@ -77,6 +77,16 @@ def loadVideos(catalog):
     input_file = csv.DictReader(open(videosfile, encoding='utf-8'))
     for video in input_file:
         model.addVideo(catalog, video)
+
+def loadCategories(catalog):
+    """
+    Carga todos las categorias del archivo e indica al modelo
+    que los adicione al catalogo
+    """
+    categoriesfile = cf.data_dir + 'category-id.csv'
+    input_file = csv.DictReader(open(categoriesfile, encoding='utf-8'), delimiter='\t')
+    for category in input_file:
+        model.addCategory(catalog, category)
 
 # Funciones de ordenamiento
 

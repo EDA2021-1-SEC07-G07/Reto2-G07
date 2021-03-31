@@ -113,6 +113,21 @@ def newCatalog():
     
     return catalog
 
+def newVideoCategory(name, id):
+    """
+    Esta estructura crea una relación entre un tag y los libros que han sido
+    marcados con dicho tag.  Se guarga el total de libros y una lista con
+    dichos libros.
+    """
+    category = {'name': '',
+           'category_id': '',
+           'books': None}
+    category['name'] = name
+    category['category_id'] = id
+    category['videos'] = lt.newList()
+    return category
+
+
 # Funciones para agregar informacion al catalogo
 
 def addVideo(catalog, video):
@@ -142,6 +157,16 @@ def addVideoCountry(catalog, country, video):
         data = newCountry(country)
         mp.put(countries, country, data)
     lt.addLast(data['videos'], video)
+
+
+def addCategory(catalog, category):
+    """
+    Adiciona un tag a la tabla de tags dentro del catalogo y se
+    actualiza el indice de identificadores del tag.
+    """
+    newcat = newVideoCategory(category['name'], category['id'])
+    mp.put(catalog['categories'], category['name'], newcat)
+    mp.put(catalog['categoriesIds'], category['id'], newcat)
 
 # Funciones para creacion de datos
 def newCountry(name):
