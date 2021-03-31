@@ -73,8 +73,8 @@ def loadVideos(catalog):
     Carga los videos del archivo.  Por cada video se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    booksfile = cf.data_dir + 'GoodReads/books.csv'
-    input_file = csv.DictReader(open(booksfile, encoding='utf-8'))
+    videosfile = cf.data_dir + 'videos-small.csv'
+    input_file = csv.DictReader(open(videosfile, encoding='utf-8'))
     for video in input_file:
         model.addVideo(catalog, video)
 

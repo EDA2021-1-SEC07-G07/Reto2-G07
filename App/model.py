@@ -115,7 +115,47 @@ def newCatalog():
 
 # Funciones para agregar informacion al catalogo
 
+def addVideo(catalog, video):
+    """
+    Esta funcion adiciona un video a la lista de videos,
+    adicionalmente lo guarda en un Map usando como llave su Id.
+    Adicionalmente se guarda en el indice de paises, una referencia
+    al libro.
+    """
+    lt.addLast(catalog['videos'], video)
+    mp.put(catalog['videoIds'], video['video_id'], video)
+    country = video['country'] #Se obtiene el país
+    
+    addVideoCountry(catalog, country.strip(), video)
+    
+
+def addVideoCountry(catalog, country, video):
+    """
+    Esta función adiciona un video a la lista de videos de un mismo país.
+    """
+    countries = catalog['countries']
+    existcountry = mp.contains(countries, country)
+    if existcountry:
+        entry = mp.get(countries, country)
+        data = me.getValue(entry)
+    else:
+        data = newCountry(country)
+        mp.put(countries, country, data)
+    lt.addLast(data['videos'], video)
+
 # Funciones para creacion de datos
+def newCountry(name):
+    """
+    Crea una nueva estructura para modelar los libros de un autor
+    y su promedio de ratings. Se crea una lista para guardar los
+    libros de dicho autor.
+    """
+    country = {'name': "",
+              "videos": None}
+    country['name'] = name
+    country['videos'] = lt.newList('SINGLE_LINKED', compareCountriesByName)
+    return country
+
 
 # Funciones de consulta
 
@@ -135,13 +175,13 @@ def compareVideoIds(id1, id2):
 
 def compareMapVideoIds(id, entry):
     """
-    Compara dos ids de libros, id es un identificador
+    Compara dos ids de videos, id es un identificador
     y entry una pareja llave-valor
     """
     identry = me.getKey(entry)
-    if (int(id) == int(identry)):
+    if (id == identry):
         return 0
-    elif (int(id) > int(identry)):
+    elif (id > identry):
         return 1
     else:
         return -1
