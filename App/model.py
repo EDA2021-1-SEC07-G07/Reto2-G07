@@ -147,7 +147,7 @@ def addVideo(catalog, video):
     category_name = me.getValue(entry)
 
     addVideoCountry(catalog, country.strip(), video)
-    addVideoCategory(catalog, category_name.strip(), video)
+    addVideoCategory(catalog, category_name, video)
     
 
 def addVideoCountry(catalog, country, video):
