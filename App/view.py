@@ -75,6 +75,12 @@ while True:
         print("Cargando información de los archivos ....")
         answer = loadData(catalog)
 
+        print('Videos cargados: ' + str(controller.videosSize(catalog)))
+        print('Paises cargados: ' + str(controller.countriesSize(catalog)))
+        print('Categorias cargadas: ' + str(controller.categoriesSize(catalog)))
+        print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{answer[1]:.3f}")
+
     else:
         sys.exit(0)
 sys.exit(0)

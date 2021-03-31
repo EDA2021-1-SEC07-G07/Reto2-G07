@@ -121,7 +121,7 @@ def newVideoCategory(name, id):
     """
     category = {'name': '',
            'category_id': '',
-           'books': None}
+           'videos': None}
     category['name'] = name
     category['category_id'] = id
     category['videos'] = lt.newList()
@@ -140,8 +140,14 @@ def addVideo(catalog, video):
     lt.addLast(catalog['videos'], video)
     mp.put(catalog['videoIds'], video['video_id'], video)
     country = video['country'] #Se obtiene el país
-    
+
+    category_id = video['category_id'] #Se obtiene el id de la categoria
+
+    entry = mp.get(catalog["categoriesIds"], category_id)
+    category_name = me.getValue(entry)
+
     addVideoCountry(catalog, country.strip(), video)
+    addVideoCategory(catalog, category_name.strip(), video)
     
 
 def addVideoCountry(catalog, country, video):
@@ -158,6 +164,20 @@ def addVideoCountry(catalog, country, video):
         mp.put(countries, country, data)
     lt.addLast(data['videos'], video)
 
+def addVideoCategory(catalog, category_name, video):
+    """
+    Esta función adiciona un video a la lista de videos de una misma categoría.
+    """
+    categories = catalog['categories']
+    existcategory = mp.contains(categories, category_name)
+    if existcategory:
+        entry = mp.get(categories, category_name)
+        data = me.getValue(entry)
+    else:
+        data = newCategory(category_name)
+        mp.put(categories, category_name, data)
+    lt.addLast(data['videos'], video)
+
 
 def addCategory(catalog, category):
     """
@@ -166,8 +186,8 @@ def addCategory(catalog, category):
     """
     newcat = newVideoCategory(category['name'], category['id'])
     mp.put(catalog['categories'], category['name'], newcat)
-    mp.put(catalog['categoriesIds'], category['id'], newcat)
-
+    mp.put(catalog['categoriesIds'], category['id'], category['name'])
+   
 # Funciones para creacion de datos
 def newCountry(name):
     """
@@ -181,8 +201,42 @@ def newCountry(name):
     country['videos'] = lt.newList('SINGLE_LINKED', compareCountriesByName)
     return country
 
+def newCategory(name):
+    """
+    Crea una nueva estructura para modelar los libros de un autor
+    y su promedio de ratings. Se crea una lista para guardar los
+    libros de dicho autor.
+    """
+    category = {'name': "",
+              "videos": None}
+    category['name'] = name
+    category['videos'] = lt.newList('SINGLE_LINKED', compareCategoriesByName)
+    return category
+
 
 # Funciones de consulta
+
+def videosSize(catalog):
+    """
+    Número de videos en el catago
+    """
+    return lt.size(catalog['videos'])
+
+
+def countriesSize(catalog):
+    """
+    Numero de paises en el catalogo
+    """
+    return mp.size(catalog['countries'])
+
+
+def categoriesSize(catalog):
+    """
+    Numero de categorías en el catalogo
+    """
+    return mp.size(catalog['categories'])
+
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -223,6 +277,20 @@ def compareCountriesByName(keyname, country):
         return 1
     else:
         return -1
+
+def compareCategoriesByName(keyname, category_name):
+    """
+    Compara dos nombres de categoria. El primero es una cadena
+    y el segundo un entry de un map
+    """
+    authentry = me.getKey(category_name)
+    if (keyname == authentry):
+        return 0
+    elif (keyname > authentry):
+        return 1
+    else:
+        return -1
+
 
 def compareCategoryNames(name, category):
     catentry = me.getKey(category)

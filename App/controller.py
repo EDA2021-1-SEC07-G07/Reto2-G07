@@ -53,9 +53,11 @@ def loadData(catalog):
     start_time = getTime()
     start_memory = getMemory()
 
-    loadVideos(catalog)
     loadCategories(catalog)
-    #loadBooksTags(catalog)
+    loadVideos(catalog)
+    
+  
+
 
     stop_memory = getMemory()
     stop_time = getTime()
@@ -88,9 +90,36 @@ def loadCategories(catalog):
     for category in input_file:
         model.addCategory(catalog, category)
 
+
+
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def videosSize(catalog):
+    """
+    Numero de videos cargados al catalogo
+    """
+    return model.videosSize(catalog)
+
+
+def countriesSize(catalog):
+    """
+    Numero de paises cargados al catalogo
+    """
+    return model.countriesSize(catalog)
+
+
+def categoriesSize(catalog):
+    """
+    Numero de categorías cargados al catalogo
+    """
+    return model.categoriesSize(catalog)
+
+
+
+
+
+
 
 # ======================================
 # Funciones para medir tiempo y memoria
