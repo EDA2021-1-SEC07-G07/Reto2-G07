@@ -146,14 +146,8 @@ def addVideo(catalog, video):
     entry = mp.get(catalog["categoriesIds"], category_id)
     category_name = me.getValue(entry)
 
-    tags = video["tags"].replace('\"', "").split("|")
-
-    for tag in tags:
-        addVideoTag(catalog, tag, video)
-
     addVideoCountry(catalog, country.strip(), video)
     addVideoCategory(catalog, category_name, video)
-    
     
 
 def addVideoCountry(catalog, country, video):
@@ -183,22 +177,6 @@ def addVideoCategory(catalog, category_name, video):
         data = newCategory(category_name)
         mp.put(categories, category_name, data)
     lt.addLast(data['videos'], video)
-    
-
-def addVideoTag(catalog, tag, video):
-    """
-    Esta función adiciona un video a la lista de videos de un mismo tag.
-    """
-    tags = catalog['tags']
-    existtag = mp.contains(tags, tag)
-    if existtag:
-        entry = mp.get(tags, tag)
-        data = me.getValue(entry)
-    else:
-        data = newCategory(tag)
-        mp.put(tags, tag, data)
-    lt.addLast(data['videos'], video)
-
 
 
 def addCategory(catalog, category):
