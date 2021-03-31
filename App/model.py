@@ -38,6 +38,80 @@ los mismos.
 """
 
 # Construccion de modelos
+def newCatalog():
+    """ Inicializa el catálogo de videos
+
+    Crea una lista vacia para guardar todos los videos
+
+    Se crean indices (Maps) por los siguientes criterios:
+    ID videos
+    Categoría
+    Pais
+    Tag
+
+    Retorna el catalogo inicializado.
+    """
+    catalog = {'videos': None,
+               'videoIds': None,
+               'categories': None,
+               'categoriesIds': None,
+               'countries': None,
+               'tags': None}
+
+    """
+    Esta lista contiene todo los videos encontrados
+    en los archivos de carga.  Estos videos no estan
+    ordenados por ningun criterio.  Son referenciados
+    por los indices creados a continuacion.
+    """
+    catalog['videos'] = lt.newList('SINGLE_LINKED', compareVideoIds)
+
+    """
+    A continuacion se crean indices por diferentes criterios
+    para llegar a la informacion consultada.  Estos indices no
+    replican informacion, solo referencian los libros de la lista
+    creada en el paso anterior.
+    """
+
+    """
+    Este indice crea un map cuya llave es el identificador del video
+    """
+    catalog['videoIds'] = mp.newMap(10000,
+                                   maptype='CHAINING',
+                                   loadfactor=4.0,
+                                   comparefunction=compareMapVideoIds)
+
+    """
+    Este indice crea un map cuya llave es el país del video
+    """
+    catalog['countries'] = mp.newMap(800,
+                                   maptype='CHAINING',
+                                   loadfactor=4.0,
+                                   comparefunction=compareCountriesByName)
+    """
+    Este indice crea un map cuya llave es la categoría 
+    """
+    catalog['categories'] = mp.newMap(34500,
+                                maptype='PROBING',
+                                loadfactor=0.5,
+                                comparefunction=compareCategoryNames)
+    """
+    Este indice crea un map cuya llave es el Id de la categoría
+    """
+    catalog['categoriesIds'] = mp.newMap(34500,
+                                  maptype='CHAINING',
+                                  loadfactor=4.0,
+                                  comparefunction=compareCategoryIds)
+
+    """
+    Este indice crea un map cuya llave es el tag del video
+    """
+    catalog['tags'] = mp.newMap(800,
+                                   maptype='CHAINING',
+                                   loadfactor=4.0,
+                                   comparefunction=compareTagsByName)
+    
+    return catalog
 
 # Funciones para agregar informacion al catalogo
 
@@ -46,5 +120,75 @@ los mismos.
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+
+def compareVideoIds(id1, id2):
+    """
+    Compara dos ids de dos videos
+    """
+    if (id1 == id2):
+        return 0
+    elif id1 > id2:
+        return 1
+    else:
+        return -1
+
+
+def compareMapVideoIds(id, entry):
+    """
+    Compara dos ids de libros, id es un identificador
+    y entry una pareja llave-valor
+    """
+    identry = me.getKey(entry)
+    if (int(id) == int(identry)):
+        return 0
+    elif (int(id) > int(identry)):
+        return 1
+    else:
+        return -1
+
+def compareCountriesByName(keyname, country):
+    """
+    Compara dos nombres de país. El primero es una cadena
+    y el segundo un entry de un map
+    """
+    authentry = me.getKey(country)
+    if (keyname == authentry):
+        return 0
+    elif (keyname > authentry):
+        return 1
+    else:
+        return -1
+
+def compareCategoryNames(name, category):
+    catentry = me.getKey(category)
+    if (name == catentry):
+        return 0
+    elif (name > catentry):
+        return 1
+    else:
+        return -1
+
+
+def compareCategoryIds(id, category):
+    catentry = me.getKey(category)
+    if (int(id) == int(catentry)):
+        return 0
+    elif (int(id) > int(catentry)):
+        return 1
+    else:
+        return 0
+
+def compareTagsByName(keyname, tag):
+    """
+    Compara dos tags de país. El primero es una cadena
+    y el segundo un entry de un map
+    """
+    authentry = me.getKey(tag)
+    if (keyname == authentry):
+        return 0
+    elif (keyname > authentry):
+        return 1
+    else:
+        return -1
 
 # Funciones de ordenamiento

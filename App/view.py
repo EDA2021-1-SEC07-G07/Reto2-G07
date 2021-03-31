@@ -26,6 +26,24 @@ import controller
 from DISClib.ADT import list as lt
 assert cf
 
+# ===================================
+# Funciones de inicializacion
+# ===================================
+
+
+def initCatalog():
+    """
+    Inicializa el catalogo de libros
+    """
+    return controller.initCatalog()
+
+
+def loadData(catalog):
+    """
+    Carga los libros en el catalogo
+    """
+    return controller.loadData(catalog)
+
 
 """
 La vista se encarga de la interacción con el usuario
@@ -36,8 +54,8 @@ operación solicitada
 
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("1- Inicializar Catálogo")
+    print("2- Cargar información en el catálogo")
 
 catalog = None
 
@@ -48,10 +66,14 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
+
         print("Cargando información de los archivos ....")
+        catalog = initCatalog()
 
     elif int(inputs[0]) == 2:
-        pass
+
+        print("Cargando información de los archivos ....")
+        answer = loadData(catalog)
 
     else:
         sys.exit(0)
