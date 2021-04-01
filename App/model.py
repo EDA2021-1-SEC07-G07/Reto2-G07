@@ -139,14 +139,14 @@ def addVideo(catalog, video):
     """
     lt.addLast(catalog['videos'], video)
     mp.put(catalog['videoIds'], video['video_id'], video)
-    country = video['country'] #Se obtiene el país
+    #country = video['country'] #Se obtiene el país
 
     category_id = video['category_id'] #Se obtiene el id de la categoria
 
     entry = mp.get(catalog["categoriesIds"], category_id)
     category_name = me.getValue(entry)
 
-    addVideoCountry(catalog, country.strip(), video)
+    #addVideoCountry(catalog, country.strip(), video)
     addVideoCategory(catalog, category_name, video)
     
 
