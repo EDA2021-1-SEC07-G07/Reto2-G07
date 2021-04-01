@@ -76,18 +76,7 @@ def newCatalog():
     """
     Este indice crea un map cuya llave es el identificador del video
     """
-    catalog['videoIds'] = mp.newMap(10000,
-                                   maptype='CHAINING',
-                                   loadfactor=4.0,
-                                   comparefunction=compareMapVideoIds)
 
-    """
-    Este indice crea un map cuya llave es el país del video
-    """
-    catalog['countries'] = mp.newMap(800,
-                                   maptype='CHAINING',
-                                   loadfactor=4.0,
-                                   comparefunction=compareCountriesByName)
     """
     Este indice crea un map cuya llave es la categoría 
     """
@@ -103,14 +92,6 @@ def newCatalog():
                                   loadfactor=4.0,
                                   comparefunction=compareCategoryIds)
 
-    """
-    Este indice crea un map cuya llave es el tag del video
-    """
-    catalog['tags'] = mp.newMap(800,
-                                   maptype='CHAINING',
-                                   loadfactor=4.0,
-                                   comparefunction=compareTagsByName)
-    
     return catalog
 
 def newVideoCategory(name, id):
@@ -138,7 +119,6 @@ def addVideo(catalog, video):
     al libro.
     """
     lt.addLast(catalog['videos'], video)
-    mp.put(catalog['videoIds'], video['video_id'], video)
     #country = video['country'] #Se obtiene el país
 
     category_id = video['category_id'] #Se obtiene el id de la categoria
@@ -149,20 +129,6 @@ def addVideo(catalog, video):
     #addVideoCountry(catalog, country.strip(), video)
     addVideoCategory(catalog, category_name, video)
     
-
-def addVideoCountry(catalog, country, video):
-    """
-    Esta función adiciona un video a la lista de videos de un mismo país.
-    """
-    countries = catalog['countries']
-    existcountry = mp.contains(countries, country)
-    if existcountry:
-        entry = mp.get(countries, country)
-        data = me.getValue(entry)
-    else:
-        data = newCountry(country)
-        mp.put(countries, country, data)
-    lt.addLast(data['videos'], video)
 
 def addVideoCategory(catalog, category_name, video):
     """
@@ -188,18 +154,7 @@ def addCategory(catalog, category):
     mp.put(catalog['categories'], category['name'], newcat)
     mp.put(catalog['categoriesIds'], category['id'], category['name'])
    
-# Funciones para creacion de datos
-def newCountry(name):
-    """
-    Crea una nueva estructura para modelar los libros de un autor
-    y su promedio de ratings. Se crea una lista para guardar los
-    libros de dicho autor.
-    """
-    country = {'name': "",
-              "videos": None}
-    country['name'] = name
-    country['videos'] = lt.newList('SINGLE_LINKED', compareCountriesByName)
-    return country
+
 
 def newCategory(name):
     """
@@ -223,11 +178,6 @@ def videosSize(catalog):
     return lt.size(catalog['videos'])
 
 
-def countriesSize(catalog):
-    """
-    Numero de paises en el catalogo
-    """
-    return mp.size(catalog['countries'])
 
 
 def categoriesSize(catalog):
@@ -265,18 +215,7 @@ def compareMapVideoIds(id, entry):
     else:
         return -1
 
-def compareCountriesByName(keyname, country):
-    """
-    Compara dos nombres de país. El primero es una cadena
-    y el segundo un entry de un map
-    """
-    authentry = me.getKey(country)
-    if (keyname == authentry):
-        return 0
-    elif (keyname > authentry):
-        return 1
-    else:
-        return -1
+
 
 def compareCategoriesByName(keyname, category_name):
     """
