@@ -39,13 +39,6 @@ def initCatalog():
     return catalog
 
 
-def initCatalog():
-    """
-    Llama la funcion de inicializacion del catalogo del modelo.
-    """
-    catalog = model.newCatalog()
-    return catalog
-
 # Funciones para la carga de datos
 def loadData(catalog):
     """
@@ -99,48 +92,7 @@ def loadCategories(catalog):
 
 
 
-
-def loadData(catalog):
-    """
-    Carga los datos de los archivos y carga los datos en la
-    estructura de datos (cateogrias y videos).
-    """
-    loadVideos(catalog)
-    loadCategories(catalog)
-
-
-def loadVideos(catalog):
-    """
-    Carga los videos del archivo CSV.
-    """
-    videosfile = cf.data_dir + 'videos-large.csv'
-    input_file = csv.DictReader(open(videosfile, encoding='utf-8'))
-    for video in input_file:
-        model.addVideo(catalog, video)
-
-        category_id = video["category_id"]
-
-        model.addCategoryId(catalog, category_id, video)
-
-def loadCategories(catalog):
-    """
-    Carga todas los categories del archivo y las agrega a la lista de categories dentro del catalogo.
-    """
-
-    category_file=cf.data_dir +"category-id.csv"
-    input_file=csv.DictReader(open(category_file, encoding='utf-8'), delimiter='\t')
-    for category in input_file:
-        model.addCategoryName(catalog, category)
-
-
 # Funciones de ordenamiento
-def sortVideos(catalog, size, cmpFunction):
-    """
-    Ordena los videos por número de views, likes o days.
-    """
-    return model.sortVideos(catalog, size, cmpFunction)
-
-
 
 # Funciones de consulta sobre el catálogo
 def videosSize(catalog):

@@ -24,8 +24,6 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
-from DISClib.ADT import map as mp
-from DISClib.DataStructures import mapentry as me
 assert cf
 
 # ===================================
@@ -54,17 +52,12 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
-
 def printMenu():
     print("Bienvenido")
     print("1- Inicializar Catálogo")
     print("2- Cargar información en el catálogo")
 
-def initCatalog():
-    """
-    Inicializa el catalogo de videos
-    """
-    return controller.initCatalog()
+catalog = None
 
 """
 Menu principal
