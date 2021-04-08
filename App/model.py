@@ -416,7 +416,7 @@ def validateNSample(n_sample, catalog):
 
     if int(n_sample) > lt.size(catalog):
             
-        print("El número de muestra ha superado el tamaño de la lista, se procederá con la cantidad máxima de videos dentro del catálogo: {}".format(lt.size(catalog['videos'])))
+        print("El número de muestra ha superado el tamaño de la lista, se procederá con la cantidad máxima de videos dentro del catálogo: {}".format(lt.size(catalog)))
 
         n_sample = lt.size(catalog)-1
 
