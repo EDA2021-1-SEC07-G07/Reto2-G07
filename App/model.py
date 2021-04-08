@@ -30,6 +30,8 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import mergesort 
+import time
 assert cf
 
 """
@@ -124,7 +126,10 @@ def newVideoCategory(name, id):
            'videos': None}
     category['name'] = name
     category['category_id'] = id
-    category['videos'] = lt.newList()
+    category['videos'] = category['videos'] = mp.newMap(34500,
+                                maptype='PROBING',
+                                loadfactor=0.5,
+                                comparefunction=compareCategoryNames)
     return category
 
 
@@ -173,10 +178,21 @@ def addVideoCategory(catalog, category_name, video):
     if existcategory:
         entry = mp.get(categories, category_name)
         data = me.getValue(entry)
+  
     else:
         data = newCategory(category_name)
         mp.put(categories, category_name, data)
-    lt.addLast(data['videos'], video)
+    
+
+
+    if not mp.contains(data["videos"], video["country"]):
+        mp.put(data["videos"], video["country"], lt.newList('SINGLE_LINKED', compareCountriesByName) )
+        
+
+    country_entry = mp.get(data["videos"], video["country"])
+    country_list = me.getValue(country_entry)
+    lt.addLast(country_list, video)
+
 
 
 def addCategory(catalog, category):
@@ -210,7 +226,10 @@ def newCategory(name):
     category = {'name': "",
               "videos": None}
     category['name'] = name
-    category['videos'] = lt.newList('SINGLE_LINKED', compareCategoriesByName)
+    category['videos'] = mp.newMap(34500,
+                                maptype='PROBING',
+                                loadfactor=0.5,
+                                comparefunction=compareCategoryNames)
     return category
 
 
@@ -324,4 +343,104 @@ def compareTagsByName(keyname, tag):
     else:
         return -1
 
+def cmpVideosByViews(video1, video2):
+    """
+    Devuelve verdadero (True) si los 'views' de video1 son menores que los del video2
+    Args:
+    video1: informacion del primer video que incluye su valor 'views'
+    video2: informacion del segundo video que incluye su valor 'views'
+    """
+    return (float(video1['views']) > float(video2['views']))
+
 # Funciones de ordenamiento
+def sortVideos(catalog, size, cmpFunction):
+    """Función que organiza una lista mediante Merge Sort. 
+
+    Parametros:
+        catalog: Catalogo a organizar
+        size: Tamaño del sub-catalogo que será organizado
+        cmpFunction: Nombre de la función de comparación a utilizar."""
+
+
+    if cmpFunction == "sortByViews":
+        sub_list = lt.subList(catalog, 1, size)
+        sub_list = sub_list.copy()
+        start_time = time.process_time()
+        sorted_list = mergesort.sort(sub_list, cmpVideosByViews)
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        return elapsed_time_mseg, sorted_list
+
+    elif cmpFunction == "sortByDays":
+        sub_list = lt.subList(catalog, 1, size)
+        sub_list = sub_list.copy()
+        start_time = time.process_time()
+        sorted_list = mergesort.sort(sub_list, cmpVideosByDays)
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        return elapsed_time_mseg, sorted_list
+
+    elif cmpFunction == "sortByLikes":
+
+        sub_list = lt.subList(catalog, 1, size)
+        sub_list = sub_list.copy()
+        start_time = time.process_time()
+        sorted_list = mergesort.sort(sub_list, cmpVideosByLikes)
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        return elapsed_time_mseg, sorted_list    
+
+#Funciones de validación 
+def validateCategory(requested_category, catalog):
+
+    valid = False
+
+    if mp.contains(catalog["categories"], requested_category):
+
+        valid = True
+
+    return valid
+
+
+def validateCountry(requested_country, catalog):
+
+    valid = False
+
+    if mp.contains(catalog["countries"], requested_country):
+
+        valid = True
+
+    return valid
+
+def validateNSample(n_sample, catalog):
+
+    if int(n_sample) > lt.size(catalog):
+            
+        print("El número de muestra ha superado el tamaño de la lista, se procederá con la cantidad máxima de videos dentro del catálogo: {}".format(lt.size(catalog['videos'])))
+
+        n_sample = lt.size(catalog)-1
+
+    return n_sample
+
+
+
+#Funciones para ejecutar requerimientos
+
+def execute_req1(catalog, req_category, req_country, n_sample):
+    """Ejecuta el requerimiento 1"""
+    
+    filter_category_entry = mp.get(catalog["categories"], req_category)
+
+    filter_category = me.getValue(filter_category_entry)
+
+    filter_country_entry = mp.get(filter_category["videos"], req_country)
+
+    filter_country = me.getValue(filter_country_entry)
+
+    sorted_catalog = sortVideos(filter_country, lt.size(filter_country), "sortByViews")[1]
+
+    n_sample = validateNSample(n_sample, sorted_catalog)
+
+    filter_nsample = lt.subList(sorted_catalog, 1, n_sample)
+
+    return filter_nsample 

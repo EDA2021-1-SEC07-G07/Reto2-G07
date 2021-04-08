@@ -45,6 +45,54 @@ def loadData(catalog):
     return controller.loadData(catalog)
 
 
+def request_category(catalog):
+
+    """Le pregunta al usuario bajo que categoría desea filtrar los algoritmos."""
+
+    requested_category = input("Ingrese el nombre de la categoria con la que desea filtrar sus datos: ")
+    requested_category = " " + requested_category
+
+    if not controller.validateCategory(requested_category, catalog):
+        
+        print("La categoría ingresada no existe. Intente de nuevo.")
+        return request_category(catalog)
+
+    return requested_category
+
+
+def request_country(catalog):
+
+    """Le pregunta al usuario bajo que país desea filtrar los algoritmos."""
+
+    requested_country = input("Ingrese el nombre del país con el que desea filtrar sus datos: ")
+
+    if not controller.validateCountry(requested_country, catalog):
+            
+            print("El país ingresado no existe. Intente de nuevo.")
+            return request_country(catalog)
+
+    return requested_country
+
+
+def request_nsample():
+
+    """Le pregunta al usuario respecto al tamaño de la muestra sobre la que se desea aplicar una función."""
+
+    n_sample = input("Ingrese el tamaño de la muestra sobre la que desea indagar (recuerde que este no debe exceder la cantidad de videos en el catálogo): ")
+    
+    try:
+        n_sample = int(n_sample) 
+
+    except Exception:
+        print("No ha ingresado un valor numérico. Intentelo de nuevo.")
+        return request_nsample()
+
+    return n_sample
+
+def execute_req1(catalog, req_category, req_country, n_sample):
+    """Ejecuta el requerimiento 1"""
+    return controller.execute_req1(catalog, req_category, req_country, n_sample)
+
 """
 La vista se encarga de la interacción con el usuario
 Presenta el menu de opciones y por cada seleccion
@@ -56,6 +104,7 @@ def printMenu():
     print("Bienvenido")
     print("1- Inicializar Catálogo")
     print("2- Cargar información en el catálogo")
+    print("3- Videos tendencia con más views (país y categoría)")
 
 catalog = None
 
@@ -81,6 +130,18 @@ while True:
         print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
               "Memoria [kB]: ", f"{answer[1]:.3f}")
 
+    
+    elif int(inputs[0]) == 3:
+
+        req_category = request_category(catalog)
+        req_country = request_country(catalog)
+        n_sample = request_nsample()
+        
+        req1_catalog = execute_req1(catalog, req_category, req_country, n_sample)
+        
+
+
     else:
         sys.exit(0)
+
 sys.exit(0)

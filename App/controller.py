@@ -75,7 +75,7 @@ def loadVideos(catalog):
     Carga los videos del archivo.  Por cada video se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    videosfile = cf.data_dir + 'videos-large.csv'
+    videosfile = cf.data_dir + 'videos-small.csv'
     input_file = csv.DictReader(open(videosfile, encoding='utf-8'))
     for video in input_file:
         model.addVideo(catalog, video)
@@ -92,7 +92,17 @@ def loadCategories(catalog):
 
 
 
-# Funciones de ordenamiento
+# Funciones de validación
+
+def validateCategory(requested_category, catalog):
+
+    return model.validateCategory(requested_category, catalog)
+
+
+def validateCountry(requested_country, catalog):
+
+    return model.validateCountry(requested_country, catalog)
+
 
 # Funciones de consulta sobre el catálogo
 def videosSize(catalog):
@@ -116,7 +126,14 @@ def categoriesSize(catalog):
     return model.categoriesSize(catalog)
 
 
+# ======================================
+# Funciones para ejecutar requerimientos
+# ====================================
 
+def execute_req1(catalog, req_category, req_country, n_sample):
+    """Ejecuta el requerimiento 1"""
+
+    return model.execute_req1(catalog, req_category, req_country, n_sample)
 
 
 
