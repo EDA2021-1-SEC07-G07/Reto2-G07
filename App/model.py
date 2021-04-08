@@ -554,8 +554,8 @@ def req1Format(video_list):
         f = "likes"
         g = "dislikes"
         
-    
-        names_categories=[a,b,c,d,e,f,g]
+        #TODO CAMBIAR A ARRAYLIST DICCIONARIO
+        names_categories=[a,b,c,d,e,f,g] 
 
         trending_date=video[a]
         title=video[b]
@@ -598,7 +598,8 @@ def req2Format(video, dias):
     title=video[a]
     channel_title=video[b]
     country=video[c]
-
+    
+    #TODO CAMBIAR A ARRAYLIST DICCIONARIO
     categories=[title,channel_title,country,dias]
     max_size=80 #tamaño de impresion 
     upper="-"*(max_size+18)+"\n"
