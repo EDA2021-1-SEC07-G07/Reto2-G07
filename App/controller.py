@@ -114,6 +114,11 @@ def req2Format(catalog, days):
 
     return model.req2Format(catalog, days)
 
+def req3Format(catalog, days):
+
+    return model.req3Format(catalog, days)
+ #-------------------------------------------------------------------
+
 # Funciones de consulta sobre el catálogo
 def videosSize(catalog):
     """
@@ -149,6 +154,11 @@ def execute_req2(catalog, req_country):
     """Ejecuta el requerimiento 2"""
 
     return model.execute_req2(catalog, req_country)
+
+
+def execute_req3(catalog, req_category):
+    """Ejecuta el requerimiento 2"""
+    return model.execute_req3(catalog, req_category)
 
 
 # ======================================

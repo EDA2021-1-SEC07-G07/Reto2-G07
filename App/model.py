@@ -532,6 +532,26 @@ def execute_req2(catalog, req_country):
 
     return (filter_first_video, filter_first_day)
 
+def execute_req3(catalog, req_category):
+    """Ejecuta el requerimiento 2"""
+    
+
+    filter_category_entry = mp.get(catalog["categories"], req_category)
+
+    filter_category_map = me.getValue(filter_category_entry)["unique_videos"]
+
+    filter_category = mp.valueSet(filter_category_map)
+
+    sorted_catalog = sortVideos(filter_category, lt.size(filter_category), "sortByDays")[1]
+
+    filter_first_element = lt.subList(sorted_catalog, 1, 1)
+
+
+    filter_first_item = lt.getElement(filter_first_element,1)
+    filter_first_video = lt.getElement(filter_first_item,1)
+    filter_first_day = lt.getElement(filter_first_item,2)
+
+    return (filter_first_video, filter_first_day)
 
 #Funciones para mostrar los requerimientos
 
@@ -601,6 +621,38 @@ def req2Format(video, dias):
     
     #TODO CAMBIAR A ARRAYLIST DICCIONARIO
     categories=[title,channel_title,country,dias]
+    max_size=80 #tamaño de impresion 
+    upper="-"*(max_size+18)+"\n"
+    text += upper+"|{}|\n".format(("VIDEO "+str(i+1)).center(max_size+16))+upper
+
+    for j in range(len(categories)):
+        a=str(names_categories[j]).center(15)
+        b=str(categories[j]).center(max_size)
+        value="|{}|{}|\n".format(a,b)
+        text+=value
+        text+=upper                    
+    text+="\n"*3
+    i+=1
+
+    return text
+
+def req3Format(video, dias):
+
+    """Función netamente de la view encargada de imprimir los datos del requerimiento 2."""
+    i=0
+    text = ""
+    
+    a = "title"
+    b = "channel_title"
+    c = "category_id"
+    d = "Días"
+    names_categories=[a,b,c,d]
+    title=video[a]
+    channel_title=video[b]
+    category=video[c]
+    
+    #TODO CAMBIAR A ARRAYLIST DICCIONARIO
+    categories=[title,channel_title,category,dias]
     max_size=80 #tamaño de impresion 
     upper="-"*(max_size+18)+"\n"
     text += upper+"|{}|\n".format(("VIDEO "+str(i+1)).center(max_size+16))+upper
