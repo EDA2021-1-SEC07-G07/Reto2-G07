@@ -44,6 +44,7 @@ def loadData(catalog):
     """
     return controller.loadData(catalog)
 
+#Funciones para solicitar información al usuario
 
 def request_category(catalog):
 
@@ -89,9 +90,18 @@ def request_nsample():
 
     return n_sample
 
+#Funciones para ejecutar requerimientos
+
 def execute_req1(catalog, req_category, req_country, n_sample):
     """Ejecuta el requerimiento 1"""
     return controller.execute_req1(catalog, req_category, req_country, n_sample)
+
+
+#Funciones para imprimir requerimientos
+
+def req1Print(catalog):
+    
+    print(controller.req1Format(catalog))
 
 """
 La vista se encarga de la interacción con el usuario
@@ -139,6 +149,7 @@ while True:
         
         req1_catalog = execute_req1(catalog, req_category, req_country, n_sample)
         
+        req1Print(req1_catalog)
 
 
     else:

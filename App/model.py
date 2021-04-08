@@ -444,3 +444,53 @@ def execute_req1(catalog, req_category, req_country, n_sample):
     filter_nsample = lt.subList(sorted_catalog, 1, n_sample)
 
     return filter_nsample 
+
+#Funciones para mostrar los requerimientos
+
+def req1Format(video_list):
+
+    """Función encargada de darle un formato a la información del requerimiento 1."""
+
+    count = 0
+    text = ""
+
+    for video in lt.iterator(video_list):
+
+        count += 1
+
+        a="trending_date"
+        b="title"
+        c = "channel_title"
+        d = "publish_time"
+        e = "views"
+        f = "likes"
+        g = "dislikes"
+        
+    
+        names_categories=[a,b,c,d,e,f,g]
+
+        trending_date=video[a]
+        title=video[b]
+        cannel_title=video[c]
+        publish_time= video[d]
+        views=video[e]
+        likes= video[f]
+        dislikes=video[g]
+
+
+
+        categories=[trending_date,title,cannel_title,publish_time, views,likes,dislikes]
+        max_size=80 #tamaño de impresion 
+        upper="-"*(max_size+18)+"\n"
+        text+=upper+"|{}|\n".format(("VIDEO "+str(count)).center(max_size+16))+upper
+        #size_var=max_size+17
+
+        for j in range(len(categories)):
+            a=str(names_categories[j]).center(15)
+            b=str(categories[j]).center(max_size)
+            value="|{}|{}|\n".format(a,b)
+            text+=value
+            text+=upper                    
+        text+="\n"*5
+
+    return text
