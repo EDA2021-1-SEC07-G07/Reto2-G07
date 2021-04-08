@@ -96,12 +96,21 @@ def execute_req1(catalog, req_category, req_country, n_sample):
     """Ejecuta el requerimiento 1"""
     return controller.execute_req1(catalog, req_category, req_country, n_sample)
 
+def execute_req2(catalog, req_country):
+    """Ejecuta el requerimiento 2"""
+    return controller.execute_req2(catalog, req_country)
+
+
 
 #Funciones para imprimir requerimientos
 
 def req1Print(catalog):
     
     print(controller.req1Format(catalog))
+
+def req2Print(catalog, days):
+    
+    print(controller.req2Format(catalog, days))
 
 """
 La vista se encarga de la interacción con el usuario
@@ -115,6 +124,7 @@ def printMenu():
     print("1- Inicializar Catálogo")
     print("2- Cargar información en el catálogo")
     print("3- Videos tendencia con más views (país y categoría)")
+    print("4- Video que ha permanecido más dias en tendencia (país)")
 
 catalog = None
 
@@ -151,6 +161,13 @@ while True:
         
         req1Print(req1_catalog)
 
+    elif int(inputs[0]) == 4:
+
+        req_country = request_country(catalog)
+
+        req2_catalog = execute_req2(catalog, req_country)
+
+        req2Print(req2_catalog[0], req2_catalog[1])
 
     else:
         sys.exit(0)

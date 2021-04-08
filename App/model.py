@@ -126,10 +126,16 @@ def newVideoCategory(name, id):
            'videos': None}
     category['name'] = name
     category['category_id'] = id
-    category['videos'] = category['videos'] = mp.newMap(34500,
+    category['videos'] = mp.newMap(34500,
                                 maptype='PROBING',
                                 loadfactor=0.5,
                                 comparefunction=compareCategoryNames)
+
+    category['unique_videos'] = mp.newMap(34500,
+                                maptype='PROBING',
+                                loadfactor=0.5,
+                                comparefunction=compareCategoryNames)
+    
     return category
 
 
@@ -169,6 +175,27 @@ def addVideoCountry(catalog, country, video):
         mp.put(countries, country, data)
     lt.addLast(data['videos'], video)
 
+
+    #Filtro automático por video único de cada país
+    if not mp.contains(data["unique_videos"], video["title"]):
+        mp.put(data["unique_videos"], video["title"], lt.newList('SINGLE_LINKED', compareCountriesByName) )
+        
+        unique_video_entry = mp.get(data["unique_videos"], video["title"])
+        unique_video = me.getValue( unique_video_entry)
+
+        lt.addLast(unique_video, video)
+        lt.addLast(unique_video, 1)
+
+
+    unique_video_entry = mp.get(data["unique_videos"], video["title"])
+    unique_video = me.getValue(unique_video_entry)
+
+    current_days = lt.getElement(unique_video, 2)
+
+    lt.changeInfo(unique_video, 2, current_days + 1)
+
+
+
 def addVideoCategory(catalog, category_name, video):
     """
     Esta función adiciona un video a la lista de videos de una misma categoría.
@@ -184,7 +211,7 @@ def addVideoCategory(catalog, category_name, video):
         mp.put(categories, category_name, data)
     
 
-
+    #Filtro automático por pais dentro de cada categoría
     if not mp.contains(data["videos"], video["country"]):
         mp.put(data["videos"], video["country"], lt.newList('SINGLE_LINKED', compareCountriesByName) )
         
@@ -192,6 +219,27 @@ def addVideoCategory(catalog, category_name, video):
     country_entry = mp.get(data["videos"], video["country"])
     country_list = me.getValue(country_entry)
     lt.addLast(country_list, video)
+
+
+    #Filtro automático por video único de cada categoría 
+    if not mp.contains(data["unique_videos"], video["title"]):
+        mp.put(data["unique_videos"], video["title"], lt.newList('SINGLE_LINKED', compareCountriesByName) )
+        
+        unique_video_entry = mp.get(data["unique_videos"], video["title"])
+        unique_video = me.getValue( unique_video_entry)
+
+        lt.addLast(unique_video, video)
+        lt.addLast(unique_video, 1)
+
+
+    unique_video_entry = mp.get(data["unique_videos"], video["title"])
+    unique_video = me.getValue(unique_video_entry)
+
+    current_days = lt.getElement(unique_video, 2)
+
+    lt.changeInfo(unique_video, 2, current_days + 1)
+
+
 
 
 
@@ -215,6 +263,10 @@ def newCountry(name):
               "videos": None}
     country['name'] = name
     country['videos'] = lt.newList('SINGLE_LINKED', compareCountriesByName)
+    country['unique_videos'] = mp.newMap(34500,
+                                maptype='PROBING',
+                                loadfactor=0.5,
+                                comparefunction=compareCategoryNames)
     return country
 
 def newCategory(name):
@@ -352,6 +404,18 @@ def cmpVideosByViews(video1, video2):
     """
     return (float(video1['views']) > float(video2['views']))
 
+def cmpVideosByDays(video1, video2):
+    """
+    Devuelve verdadero (True) si los 'views' de video1 son menores que los del video2
+    Args:
+    video1: informacion del primer video que incluye su valor de dias en la posición 0 
+    video2: informacion del segundo video que incluye su valor de dias en la posición 0 
+    """
+
+    
+    return (float(lt.getElement(video1, 2)) > float(lt.getElement(video2, 2)))
+
+
 # Funciones de ordenamiento
 def sortVideos(catalog, size, cmpFunction):
     """Función que organiza una lista mediante Merge Sort. 
@@ -445,6 +509,30 @@ def execute_req1(catalog, req_category, req_country, n_sample):
 
     return filter_nsample 
 
+
+def execute_req2(catalog, req_country):
+    """Ejecuta el requerimiento 2"""
+    
+
+    filter_country_entry = mp.get(catalog["countries"], req_country)
+
+    filter_country_map = me.getValue(filter_country_entry)["unique_videos"]
+
+    filter_country = mp.valueSet(filter_country_map)
+
+    sorted_catalog = sortVideos(filter_country, lt.size(filter_country), "sortByDays")[1]
+
+    filter_first_element = lt.subList(sorted_catalog, 1, 1)
+
+
+    filter_first_item = lt.getElement(filter_first_element,1)
+
+    filter_first_video = lt.getElement(filter_first_item,1)
+    filter_first_day = lt.getElement(filter_first_item,2)
+
+    return (filter_first_video, filter_first_day)
+
+
 #Funciones para mostrar los requerimientos
 
 def req1Format(video_list):
@@ -492,5 +580,37 @@ def req1Format(video_list):
             text+=value
             text+=upper                    
         text+="\n"*5
+
+    return text
+
+
+def req2Format(video, dias):
+
+    """Función netamente de la view encargada de imprimir los datos del requerimiento 2."""
+    i=0
+    text = ""
+    
+    a = "title"
+    b = "channel_title"
+    c = "country"
+    d = "Días"
+    names_categories=[a,b,c,d]
+    title=video[a]
+    channel_title=video[b]
+    country=video[c]
+
+    categories=[title,channel_title,country,dias]
+    max_size=80 #tamaño de impresion 
+    upper="-"*(max_size+18)+"\n"
+    text += upper+"|{}|\n".format(("VIDEO "+str(i+1)).center(max_size+16))+upper
+
+    for j in range(len(categories)):
+        a=str(names_categories[j]).center(15)
+        b=str(categories[j]).center(max_size)
+        value="|{}|{}|\n".format(a,b)
+        text+=value
+        text+=upper                    
+    text+="\n"*3
+    i+=1
 
     return text
