@@ -74,6 +74,12 @@ def request_country(catalog):
 
     return requested_country
 
+def request_tag(catalog):
+    """Le pregunta al usuario bajo que tag desea filtrar los videos."""
+
+    requested_tag = input("Ingrese el nombre del tag con el que desea filtrar sus datos: ")
+
+    return requested_tag
 
 def request_nsample():
 
@@ -101,8 +107,13 @@ def execute_req2(catalog, req_country):
     return controller.execute_req2(catalog, req_country)
 
 def execute_req3(catalog, req_category):
-    """Ejecuta el requerimiento 2"""
+    """Ejecuta el requerimiento 3"""
     return controller.execute_req3(catalog, req_category)
+
+def execute_req4(catalog, req_country ,req_tag, n_sample):
+    """Ejecuta el requerimiento 4"""
+    return controller.execute_req4(catalog, req_country ,req_tag, n_sample)
+
 
 
 
@@ -118,6 +129,9 @@ def req2Print(catalog, days):
 def req3Print(catalog, days):
     print(controller.req3Format(catalog, days))
 
+def req4Print(catalog, n_sample):
+     print(controller.req4Format(catalog, n_sample))
+
 """
 La vista se encarga de la interacción con el usuario
 Presenta el menu de opciones y por cada seleccion
@@ -132,6 +146,7 @@ def printMenu():
     print("3- Videos tendencia con más views (país y categoría)")
     print("4- Video que ha permanecido más dias en tendencia (país)")
     print("5- Video que ha permanecido más dias en tendencia para una categoria")
+    print("6- Videos tendencia por país y tag específico")
 
 catalog = None
 
@@ -178,6 +193,16 @@ while True:
         req_category = request_category(catalog)
         req3_catalog = execute_req3(catalog, req_category)
         req3Print(req3_catalog[0], req3_catalog[1])
+
+    elif int(inputs[0]) == 6:
+
+        req_country = request_country(catalog)
+        req_tag = request_tag(catalog)
+        n_sample = request_nsample()
+        
+        
+        req4_catalog = execute_req4(catalog, req_country ,req_tag, n_sample)
+        req4Print(req4_catalog, n_sample)
 
     else:
         sys.exit(0)

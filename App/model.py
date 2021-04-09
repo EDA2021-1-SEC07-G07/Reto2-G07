@@ -411,10 +411,18 @@ def cmpVideosByDays(video1, video2):
     video1: informacion del primer video que incluye su valor de dias en la posición 0 
     video2: informacion del segundo video que incluye su valor de dias en la posición 0 
     """
-
     
     return (float(lt.getElement(video1, 2)) > float(lt.getElement(video2, 2)))
 
+
+def cmpVideosByLikes(video1, video2):
+    """
+    Devuelve verdadero (True) si los 'LIKES' de video1 son menores que los del video2
+    Args:
+    video1: informacion del primer video que incluye su valor 'LIKES'
+    video2: informacion del segundo video que incluye su valor 'LIKES'
+    """
+    return (float(video1["likes"]) > float(video2["likes"]))
 
 # Funciones de ordenamiento
 def sortVideos(catalog, size, cmpFunction):
@@ -553,6 +561,46 @@ def execute_req3(catalog, req_category):
 
     return (filter_first_video, filter_first_day)
 
+
+
+def execute_req4(catalog, req_country ,req_tag, n_sample):
+    """Ejecuta el requerimiento 4"""
+    
+
+    filter_country_entry = mp.get(catalog["countries"], req_country)
+
+    filter_country = me.getValue(filter_country_entry)["videos"]
+
+    filter_tag = filterTag(filter_country, req_tag)
+
+    sorted_catalog = sortVideos(filter_tag, lt.size(filter_tag), "sortByLikes")[1]
+
+    n_sample = validateNSample(n_sample, sorted_catalog)
+
+    filter_nsample = lt.subList(sorted_catalog, 1, n_sample)
+
+    return (filter_nsample)
+
+
+#Funciones de filtrado
+def filterTag(catalog, tag):
+    """Filtra el catalogo obteniendo uno reducido en el que solo se incluyan los videos que
+       contengan el tag especificado."""
+
+    filter_tags = lt.newList("ARRAY_LIST")
+
+    for video in lt.iterator(catalog):
+
+        video_tags=video["tags"]
+        
+        if tag in video_tags:
+            lt.addLast(filter_tags, video)
+               
+    return filter_tags
+
+
+
+
 #Funciones para mostrar los requerimientos
 
 def req1Format(video_list):
@@ -667,3 +715,70 @@ def req3Format(video, dias):
     i+=1
 
     return text
+
+def req4Format(list_videos, n_sample):
+  
+    text = ""
+
+    if lt.size(list_videos) >= 1:
+        for i in range(n_sample):
+            a = "title"
+            b= "channel_title"
+            c = "publish_time"
+            d="views"
+            e = "likes"
+            f = "dislikes"
+            g="tags"
+
+            names_categories=[a,b,c,d,e,f,g]
+            video = lt.getElement(list_videos, i+1)
+
+            title=video[a]
+            cannel_title=video[b]
+            publish_time= video[c]
+            views=video[d]
+            likes= video[e]
+            dislikes=video[f]
+            tags=video[g]
+
+
+            categories=[title,cannel_title,publish_time, views,likes,dislikes,tags]
+            max_size=70
+
+            upper="-"*(max_size+18)+"\n"
+            text += upper+"|{}|\n".format(("VIDEO "+str(i+1)).center(max_size+16))+upper
+            size_var=max_size+17
+
+            for j in range(len(categories)):
+                if j<len(categories)-1:
+                    a=str(names_categories[j]).center(15)
+                    b=str(categories[j]).center(max_size)
+                    value="|{}|{}|\n".format(a,b)
+                else:
+                    a=str(names_categories[j]).center(size_var-1)
+                    value="|{}|\n".format(a)
+                    value+=upper
+                    categorie=categories[j]
+                    
+                    tam=len(categorie)//size_var
+                    pos=0
+                    for k in range(tam+1):
+                        final=pos+size_var
+                        try:
+                            slide=categorie[pos:final]
+                        except:
+                            slide=categorie[pos:len(cannel_title)-1]
+                            slide=slide.center(size_var)
+                        value+="|{}|\n".format(slide)
+                        
+                        pos+=size_var
+
+                    b=str(categories[j]).ljust(max_size)
+                    
+                text+=value
+                text+=upper
+
+            text+="\n"*5
+
+    return text
+

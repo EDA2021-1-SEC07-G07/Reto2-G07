@@ -117,6 +117,10 @@ def req2Format(catalog, days):
 def req3Format(catalog, days):
 
     return model.req3Format(catalog, days)
+
+def req4Format(catalog, n_sample):
+
+    return model.req4Format(catalog, n_sample)
  #-------------------------------------------------------------------
 
 # Funciones de consulta sobre el catálogo
@@ -157,9 +161,12 @@ def execute_req2(catalog, req_country):
 
 
 def execute_req3(catalog, req_category):
-    """Ejecuta el requerimiento 2"""
+    """Ejecuta el requerimiento 3"""
     return model.execute_req3(catalog, req_category)
 
+def execute_req4(catalog, req_country ,req_tag, n_sample):
+    """Ejecuta el requerimiento 4"""
+    return model.execute_req4(catalog, req_country ,req_tag, n_sample)
 
 # ======================================
 # Funciones para medir tiempo y memoria
