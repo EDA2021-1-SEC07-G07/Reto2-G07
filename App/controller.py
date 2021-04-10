@@ -66,6 +66,8 @@ def loadData(catalog):
     delta_time = stop_time - start_time
     delta_memory = deltaMemory(start_memory, stop_memory)
 
+
+    addTime(catalog,delta_time,delta_memory,"carga")
     return delta_time, delta_memory
 
 
@@ -90,6 +92,10 @@ def loadCategories(catalog):
     for category in input_file:
         model.addCategory(catalog, category)
 
+# Funciones de tiempo-model
+
+def addTime(catalog,time,memory, label):
+    return model.addTime(catalog,time,memory,label)
 
 
 # Funciones de validación

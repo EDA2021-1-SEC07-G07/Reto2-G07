@@ -58,7 +58,8 @@ def newCatalog():
                'categories': None,
                'categoriesIds': None,
                'countries': None,
-               'tags': None}
+               'tags': None,
+               "times":None}
 
     """
     Esta lista contiene todo los videos encontrados
@@ -113,6 +114,8 @@ def newCatalog():
                                    loadfactor=4.0,
                                    comparefunction=compareTagsByName)
     
+    catalog['times']=lt.newList()
+
     return catalog
 
 def newVideoCategory(name, id):
@@ -138,7 +141,15 @@ def newVideoCategory(name, id):
     
     return category
 
+# Funciones de Tiempo en catalogo de
 
+def addTime(catalog,time,memory, label):
+    info={
+        "label":label,
+        "time":time,
+        "memory":memory,
+    }
+    lt.addLast(catalog['times'], info)
 # Funciones para agregar informacion al catalogo
 
 def addVideo(catalog, video):
