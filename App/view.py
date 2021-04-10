@@ -23,6 +23,7 @@
 import config as cf
 import sys
 import controller
+import tracemalloc  
 import graph
 from DISClib.ADT import list as lt
 assert cf
@@ -98,6 +99,11 @@ def request_nsample():
         return request_nsample()
 
     return n_sample
+
+#Función para imprimir gráficas
+
+def addTime(catalog,time,memory, label):
+    return controller.addTime(catalog,time,memory,label)
 
 #Funciones para ejecutar requerimientos
 
@@ -175,16 +181,17 @@ while True:
         req_category = request_category(catalog)
         req_country = request_country(catalog)
         n_sample = request_nsample()
-        
+        # Filtro por country and category
         req1_catalog = execute_req1(catalog, req_category, req_country, n_sample)
-        
         req1Print(req1_catalog)
 
     elif int(inputs[0]) == 4:
 
         req_country = request_country(catalog)
+        # Filtro por country
         req2_catalog = execute_req2(catalog, req_country)
         req2Print(req2_catalog[0], req2_catalog[1])
+
 
     elif int(inputs[0]) == 5:
         req_category = request_category(catalog)

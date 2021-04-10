@@ -31,6 +31,7 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Algorithms.Sorting import mergesort 
+import tracemalloc
 import time
 assert cf
 
@@ -512,6 +513,9 @@ def validateNSample(n_sample, catalog):
 def execute_req1(catalog, req_category, req_country, n_sample):
     """Ejecuta el requerimiento 1"""
     
+
+
+
     filter_category_entry = mp.get(catalog["categories"], req_category)
 
     filter_category = me.getValue(filter_category_entry)
@@ -525,6 +529,10 @@ def execute_req1(catalog, req_category, req_country, n_sample):
     n_sample = validateNSample(n_sample, sorted_catalog)
 
     filter_nsample = lt.subList(sorted_catalog, 1, n_sample)
+
+
+
+    addTime(catalog,delta_time,delta_memory,"Requerimiento 1")
 
     return filter_nsample 
 
