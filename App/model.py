@@ -29,7 +29,6 @@ import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
-from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Algorithms.Sorting import mergesort 
 import tracemalloc
 import time
@@ -54,21 +53,12 @@ def newCatalog():
 
     Retorna el catalogo inicializado.
     """
-    catalog = {'videos': None,
-               'videoIds': None,
-               'categories': None,
+    catalog = {'categories': None,
                'categoriesIds': None,
                'countries': None,
                'tags': None,
                "times":None}
 
-    """
-    Esta lista contiene todo los videos encontrados
-    en los archivos de carga.  Estos videos no estan
-    ordenados por ningun criterio.  Son referenciados
-    por los indices creados a continuacion.
-    """
-    catalog['videos'] = lt.newList('SINGLE_LINKED', compareVideoIds)
 
     """
     A continuacion se crean indices por diferentes criterios
@@ -80,29 +70,25 @@ def newCatalog():
     """
     Este indice crea un map cuya llave es el identificador del video
     """
-    catalog['videoIds'] = mp.newMap(10000,
-                                   maptype='CHAINING',
-                                   loadfactor=4.0,
-                                   comparefunction=compareMapVideoIds)
 
     """
     Este indice crea un map cuya llave es el país del video
     """
-    catalog['countries'] = mp.newMap(800,
+    catalog['countries'] = mp.newMap(17,
                                    maptype='CHAINING',
                                    loadfactor=4.0,
                                    comparefunction=compareCountriesByName)
     """
     Este indice crea un map cuya llave es la categoría 
     """
-    catalog['categories'] = mp.newMap(34500,
-                                maptype='PROBING',
-                                loadfactor=0.5,
+    catalog['categories'] = mp.newMap(47,
+                                maptype='CHAINING',
+                                loadfactor=4.0,
                                 comparefunction=compareCategoryNames)
     """
     Este indice crea un map cuya llave es el Id de la categoría
     """
-    catalog['categoriesIds'] = mp.newMap(34500,
+    catalog['categoriesIds'] = mp.newMap(47,
                                   maptype='CHAINING',
                                   loadfactor=4.0,
                                   comparefunction=compareCategoryIds)
@@ -131,13 +117,13 @@ def newVideoCategory(name, id):
     category['name'] = name
     category['category_id'] = id
     category['videos'] = mp.newMap(34500,
-                                maptype='PROBING',
-                                loadfactor=0.5,
+                                maptype='CHAINING',
+                                loadfactor=2,
                                 comparefunction=compareCategoryNames)
 
-    category['unique_videos'] = mp.newMap(34500,
-                                maptype='PROBING',
-                                loadfactor=0.5,
+    category['unique_videos'] = mp.newMap(3450,
+                                maptype='CHAINING',
+                                loadfactor=2,
                                 comparefunction=compareCategoryNames)
     
     return category
@@ -160,8 +146,7 @@ def addVideo(catalog, video):
     Adicionalmente se guarda en el indice de paises, una referencia
     al libro.
     """
-    lt.addLast(catalog['videos'], video)
-    mp.put(catalog['videoIds'], video['video_id'], video)
+
     country = video['country'] #Se obtiene el país
 
     category_id = video['category_id'] #Se obtiene el id de la categoria
@@ -190,7 +175,7 @@ def addVideoCountry(catalog, country, video):
 
     #Filtro automático por video único de cada país
     if not mp.contains(data["unique_videos"], video["title"]):
-        mp.put(data["unique_videos"], video["title"], lt.newList('SINGLE_LINKED', compareCountriesByName) )
+        mp.put(data["unique_videos"], video["title"], lt.newList('ARRAY_LIST') )
         
         unique_video_entry = mp.get(data["unique_videos"], video["title"])
         unique_video = me.getValue( unique_video_entry)
@@ -198,13 +183,13 @@ def addVideoCountry(catalog, country, video):
         lt.addLast(unique_video, video)
         lt.addLast(unique_video, 1)
 
+    else:
+        unique_video_entry = mp.get(data["unique_videos"], video["title"])
+        unique_video = me.getValue(unique_video_entry)
 
-    unique_video_entry = mp.get(data["unique_videos"], video["title"])
-    unique_video = me.getValue(unique_video_entry)
+        current_days = lt.getElement(unique_video, 2)
 
-    current_days = lt.getElement(unique_video, 2)
-
-    lt.changeInfo(unique_video, 2, current_days + 1)
+        lt.changeInfo(unique_video, 2, current_days + 1)
 
 
 
@@ -225,7 +210,7 @@ def addVideoCategory(catalog, category_name, video):
 
     #Filtro automático por pais dentro de cada categoría
     if not mp.contains(data["videos"], video["country"]):
-        mp.put(data["videos"], video["country"], lt.newList('SINGLE_LINKED', compareCountriesByName) )
+        mp.put(data["videos"], video["country"], lt.newList('ARRAY_LIST'))
         
 
     country_entry = mp.get(data["videos"], video["country"])
@@ -235,7 +220,7 @@ def addVideoCategory(catalog, category_name, video):
 
     #Filtro automático por video único de cada categoría 
     if not mp.contains(data["unique_videos"], video["title"]):
-        mp.put(data["unique_videos"], video["title"], lt.newList('SINGLE_LINKED', compareCountriesByName) )
+        mp.put(data["unique_videos"], video["title"], lt.newList('ARRAY_LIST') )
         
         unique_video_entry = mp.get(data["unique_videos"], video["title"])
         unique_video = me.getValue( unique_video_entry)
@@ -243,13 +228,13 @@ def addVideoCategory(catalog, category_name, video):
         lt.addLast(unique_video, video)
         lt.addLast(unique_video, 1)
 
+    else:
+        unique_video_entry = mp.get(data["unique_videos"], video["title"])
+        unique_video = me.getValue(unique_video_entry)
 
-    unique_video_entry = mp.get(data["unique_videos"], video["title"])
-    unique_video = me.getValue(unique_video_entry)
+        current_days = lt.getElement(unique_video, 2)
 
-    current_days = lt.getElement(unique_video, 2)
-
-    lt.changeInfo(unique_video, 2, current_days + 1)
+        lt.changeInfo(unique_video, 2, current_days + 1)
 
 
 
@@ -274,10 +259,10 @@ def newCountry(name):
     country = {'name': "",
               "videos": None}
     country['name'] = name
-    country['videos'] = lt.newList('SINGLE_LINKED', compareCountriesByName)
-    country['unique_videos'] = mp.newMap(34500,
-                                maptype='PROBING',
-                                loadfactor=0.5,
+    country['videos'] = lt.newList('ARRAY_LIST')
+    country['unique_videos'] = mp.newMap(3450,
+                                maptype='CHAINING',
+                                loadfactor=4.0,
                                 comparefunction=compareCategoryNames)
     return country
 
@@ -291,8 +276,8 @@ def newCategory(name):
               "videos": None}
     category['name'] = name
     category['videos'] = mp.newMap(34500,
-                                maptype='PROBING',
-                                loadfactor=0.5,
+                                maptype='CHAINING',
+                                loadfactor=4.0,
                                 comparefunction=compareCategoryNames)
     return category
 
@@ -423,8 +408,7 @@ def cmpVideosByDays(video1, video2):
     video1: informacion del primer video que incluye su valor de dias en la posición 0 
     video2: informacion del segundo video que incluye su valor de dias en la posición 0 
     """
-    
-    return (float(lt.getElement(video1, 2)) > float(lt.getElement(video2, 2)))
+    return float(lt.lastElement(video1)) > float(lt.lastElement(video2))
 
 
 def cmpVideosByLikes(video1, video2):
@@ -544,6 +528,7 @@ def execute_req2(catalog, req_country):
     filter_country = mp.valueSet(filter_country_map)
 
     sorted_catalog = sortVideos(filter_country, lt.size(filter_country), "sortByDays")[1]
+
 
     filter_first_element = lt.subList(sorted_catalog, 1, 1)
 
