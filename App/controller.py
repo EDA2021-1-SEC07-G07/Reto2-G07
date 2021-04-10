@@ -77,7 +77,7 @@ def loadVideos(catalog):
     Carga los videos del archivo.  Por cada video se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    videosfile = cf.data_dir + 'videos-large.csv'
+    videosfile = cf.data_dir + 'videos-small.csv'
     input_file = csv.DictReader(open(videosfile, encoding='utf-8'))
     for video in input_file:
         model.addVideo(catalog, video)
@@ -186,7 +186,7 @@ def execute_req4(catalog, req_country ,req_tag, n_sample):
     start=start_functions()
     filter_catalog =  model.execute_req4(catalog, req_country ,req_tag, n_sample)
     finish=finish_functions()
-    calculus_of_memorytime(catalog, start, finish, "Requerimiento ")
+    calculus_of_memorytime(catalog, start, finish, "Requerimiento 4")
 
     return filter_catalog
 
