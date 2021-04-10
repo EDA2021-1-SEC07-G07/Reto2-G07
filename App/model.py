@@ -483,10 +483,10 @@ def validateCountry(requested_country, catalog):
 def validateNSample(n_sample, catalog):
 
     if int(n_sample) > lt.size(catalog):
-            
-        print("El número de muestra ha superado el tamaño de la lista, se procederá con la cantidad máxima de videos dentro del catálogo: {}".format(lt.size(catalog)))
 
         n_sample = lt.size(catalog)-1
+            
+        print("El número de muestra ha superado el tamaño de la lista, se procederá con la cantidad máxima de videos dentro del catálogo: {}".format(n_sample))
 
     return n_sample
 
@@ -721,7 +721,9 @@ def req4Format(list_videos, n_sample):
     text = ""
 
     if lt.size(list_videos) >= 1:
+        
         for i in range(n_sample):
+            
             a = "title"
             b= "channel_title"
             c = "publish_time"
