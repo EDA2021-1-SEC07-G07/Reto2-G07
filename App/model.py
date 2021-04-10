@@ -530,10 +530,6 @@ def execute_req1(catalog, req_category, req_country, n_sample):
 
     filter_nsample = lt.subList(sorted_catalog, 1, n_sample)
 
-
-
-    addTime(catalog,delta_time,delta_memory,"Requerimiento 1")
-
     return filter_nsample 
 
 

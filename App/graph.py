@@ -60,7 +60,7 @@ def print_execution_time(catalog):
     ax.set_title("Memory of execution")
     ax.grid(color='gray', linestyle='dashed', linewidth=1, alpha=0.4)
     # Pintar los ejes pasando por (0,0)
-    ax.axhline(0, color='black', linewidth=0.5)1
+    ax.axhline(0, color='black', linewidth=0.5)
 
     
     ax.set_xticks(list_names)
