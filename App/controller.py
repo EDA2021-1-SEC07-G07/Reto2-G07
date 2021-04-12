@@ -161,7 +161,7 @@ def execute_req1(catalog, req_category, req_country, n_sample):
     start=start_functions()
     filter_catalog= model.execute_req1(catalog, req_category, req_country, n_sample)
     finish=finish_functions()
-    calculus_of_memorytime(catalog, start, finish, "Requerimiento 1")
+    calculus_of_memorytime(catalog, start, finish, "Req1")
     return filter_catalog
 
 def execute_req2(catalog, req_country):
@@ -169,7 +169,7 @@ def execute_req2(catalog, req_country):
     start=start_functions()
     filter_catalog=model.execute_req2(catalog, req_country)
     finish=finish_functions()
-    calculus_of_memorytime(catalog, start, finish, "Requerimiento 2")
+    calculus_of_memorytime(catalog, start, finish, "Req2")
     return filter_catalog
 
 
@@ -178,7 +178,7 @@ def execute_req3(catalog, req_category):
     start=start_functions()
     filter_catalog=model.execute_req3(catalog, req_category)
     finish=finish_functions()
-    calculus_of_memorytime(catalog, start, finish, "Requerimiento 3")
+    calculus_of_memorytime(catalog, start, finish, "Req3")
     return  filter_catalog
 
 def execute_req4(catalog, req_country ,req_tag, n_sample):
@@ -186,7 +186,7 @@ def execute_req4(catalog, req_country ,req_tag, n_sample):
     start=start_functions()
     filter_catalog =  model.execute_req4(catalog, req_country ,req_tag, n_sample)
     finish=finish_functions()
-    calculus_of_memorytime(catalog, start, finish, "Requerimiento 4")
+    calculus_of_memorytime(catalog, start, finish, "Req4")
 
     return filter_catalog
 
@@ -210,7 +210,7 @@ def finish_functions():
     return stop_time, stop_memory
 
 def calculus_of_memorytime(catalog,start:tuple, finish:tuple, label):
-    delta_time=start[0]-finish[0]
+    delta_time=finish[0]-start[0]
     delta_memory=deltaMemory(start[1], finish[1])
     
     print(delta_time,delta_memory)
